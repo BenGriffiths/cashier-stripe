@@ -20,12 +20,7 @@ class WebhookController extends Controller
     public function handleWebhook(Request $request)
     {
         $payload = json_decode($request->getContent(), true);
-
-        if (! $this->isInTestingEnvironment() && ! $this->eventExistsOnStripe($payload['id'])) {
-            return;
-        }
-
-        $method = 'handle'.studly_case(str_replace('.', '_', $payload['type']));
+        $method  = 'handle'.studly_case(str_replace('.', '_', $payload['type']));
 
         if (method_exists($this, $method)) {
             return $this->{$method}($payload);
